@@ -1,0 +1,108 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --dot: rgba(11, 31, 63, 0.08);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    /* offset for sticky navbar + jump tabs when anchoring */
+    scroll-padding-top: 8.5rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-white text-ink font-sans antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display text-navy-900;
+    text-wrap: balance;
+  }
+
+  ::selection {
+    @apply bg-brand-600 text-white;
+  }
+
+  :focus-visible {
+    @apply outline-none ring-2 ring-brand-600 ring-offset-2 ring-offset-white rounded-sm;
+  }
+}
+
+@layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-container px-6 lg:px-8;
+  }
+
+  /* Subtle dotted-grid background pattern (SVG-in-CSS, not a raster image) */
+  .dotted-grid {
+    background-image: radial-gradient(var(--dot) 1.4px, transparent 1.4px);
+    background-size: 24px 24px;
+    background-position: -12px -12px;
+  }
+
+  .dotted-grid-dark {
+    background-image: radial-gradient(rgba(255, 255, 255, 0.06) 1.4px, transparent 1.4px);
+    background-size: 24px 24px;
+  }
+
+  .link-underline {
+    @apply relative inline-flex items-center gap-1 font-medium text-brand-600;
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
+
+/* Marquee — used by the university logo strip */
+.marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee 34s linear infinite;
+}
+.marquee-mask {
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    #000 8%,
+    #000 92%,
+    transparent
+  );
+  mask-image: linear-gradient(to right, transparent, #000 8%, #000 92%, transparent);
+}
+.marquee:hover .marquee-track {
+  animation-play-state: paused;
+}
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .marquee-track,
+  .animate-float,
+  .animate-marquee {
+    animation: none !important;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+  }
+}
