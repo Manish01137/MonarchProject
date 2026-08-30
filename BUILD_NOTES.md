@@ -43,7 +43,8 @@ The 25+ destinations claim in the stat bar is aspirational marketing copy — ad
 | **Logo** | ✅ Real logo wired — `public/monarch-logo.png`, rendered by `MonarchLogo.tsx` in navbar, footer (on a white plate for contrast on navy) and mobile drawer. |
 | **Colours** | ✅ Retuned to the logo: navy stays the dark base, **coral-orange `#E44E29`** is the primary CTA/link/accent (Tailwind `brand`), **maroon `#8A2A43`** replaces the old gold on dark banners/CTAs (Tailwind `maroon`). Tokens in `tailwind.config.ts`. |
 | **Favicon** (`src/app/icon.svg`) | Coded orange/maroon mark — swap for the official favicon if you have one. |
-| **Team photo** | ✅ Real photo `public/teamphoto.jpg` — used in the **home hero** (right side, with the flag chips + "Visa Approved" badge over it) **and** the "Meet The People Behind Your Journey" section. Same image appears twice; supply a second photo if you'd like them different. |
+| **Team photo** | ✅ Real photo `public/teamphoto.jpg` — used in the "Meet The People Behind Your Journey" section. |
+| **Home hero image** | Unsplash — international graduates celebrating in caps & gowns (`public/images/hero-graduation.jpg`). Swap for owned photography (real students / a graduation) if you have it. |
 | Other `public/images/*.jpg` | Unsplash photography (downloaded, Unsplash licence) — country/city shots and service-page heroes. Replace with owned photography when available. |
 
 Still to swap:

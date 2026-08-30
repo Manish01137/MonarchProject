@@ -72,8 +72,8 @@ export function Hero() {
         >
           <div className="relative aspect-[4/3] overflow-hidden rounded-[28px] shadow-card-hover">
             <Image
-              src="/teamphoto.jpg"
-              alt="The Monarch Visa Advisors team at their Ahmedabad office"
+              src="/images/hero-graduation.jpg"
+              alt="A group of international graduates celebrating in caps and gowns outside their university"
               fill
               priority
               sizes="(max-width: 1024px) 90vw, 45vw"
