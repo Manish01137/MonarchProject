@@ -6,26 +6,47 @@ export const site = {
   description:
     "Monarch Visa Advisors provides study-abroad counselling, university admissions, work permit, PR and visa filing assistance with 10+ years of experience.",
   phones: [
-    { label: "Counselling", value: "+91 90000 00000", href: "tel:+919000000000" },
-    { label: "Support", value: "+91 90000 11111", href: "tel:+919000011111" },
+    { label: "General", value: "+91 70437 39436", href: "tel:+917043739436" },
+    { label: "Study Visa", value: "+91 93284 97871", href: "tel:+919328497871" },
+    { label: "Work Visa & PR", value: "+91 88498 73912", href: "tel:+918849873912" },
   ],
   email: "hello@monarchvisaadvisors.com",
   address: {
-    line1: "Monarch Visa Advisors",
+    line1: "Monarch Visa Advisors LLP",
     line2: "Ahmedabad, Gujarat, India",
     locality: "Ahmedabad",
     region: "Gujarat",
     country: "IN",
   },
+  /** Exact, client-supplied Google Business Profile link — use for every "view on map" / "get directions" CTA. */
+  mapsShareUrl: "https://share.google/SW2uF8r1x212Fzj8E",
   hours: "Mon–Sat, 10:00 AM – 7:00 PM IST",
   socials: [
-    { label: "Facebook", href: "https://facebook.com", icon: "facebook" as const },
-    { label: "Pinterest", href: "https://pinterest.com", icon: "pinterest" as const },
-    { label: "YouTube", href: "https://youtube.com", icon: "youtube" as const },
-    { label: "LinkedIn", href: "https://linkedin.com", icon: "linkedin" as const },
+    {
+      label: "Instagram",
+      href: "https://www.instagram.com/monarch_visa_advisors/",
+      icon: "instagram" as const,
+    },
+    {
+      label: "Facebook",
+      href: "https://www.facebook.com/profile.php?id=61574888713959",
+      icon: "facebook" as const,
+    },
+    {
+      label: "YouTube",
+      href: "https://www.youtube.com/@monarch_visa_advisors",
+      icon: "youtube" as const,
+    },
+    {
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/company/monarch-visa-advisors-llp",
+      icon: "linkedin" as const,
+    },
   ],
+  // Keyless embed resolved by business name — the exact listing behind mapsShareUrl
+  // (Google Knowledge Graph id /g/11zfq7sdx1 = "Monarch Visa Advisors LLP").
   mapEmbedSrc:
-    "https://www.google.com/maps?q=Ahmedabad%2C%20Gujarat%2C%20India&output=embed",
+    "https://www.google.com/maps?q=Monarch+Visa+Advisors+LLP%2C+Ahmedabad%2C+Gujarat&output=embed",
 };
 
 export const countryNav = [
@@ -52,7 +73,7 @@ export const footerNav = {
     { label: "Universities", href: "/#universities" },
     { label: "Services", href: "/services" },
     { label: "Success Stories", href: "/#team" },
-    { label: "About Us", href: "/#team" },
+    { label: "About Us", href: "/team" },
   ],
   resources: [
     { label: "Blogs", href: "/#" },

@@ -56,7 +56,7 @@ export function TeamSection() {
           </motion.ul>
 
           <Reveal>
-            <Button href="/contact" size="lg" withArrow>
+            <Button href="/team" size="lg" withArrow>
               Meet Our Team
             </Button>
           </Reveal>

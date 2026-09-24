@@ -170,6 +170,7 @@ export function Navbar() {
             </AnimatePresence>
           </div>
 
+          <NavLink href="/team" label="Team" active={pathname === "/team"} />
           <NavLink href="/contact" label="Contact" active={pathname === "/contact"} />
         </div>
 
@@ -275,6 +276,7 @@ export function Navbar() {
                   </Link>
                 </MobileAccordion>
 
+                <MobileLink href="/team" label="Team" onNavigate={() => setMobileOpen(false)} />
                 <MobileLink
                   href="/contact"
                   label="Contact"

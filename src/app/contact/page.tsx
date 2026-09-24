@@ -12,7 +12,7 @@ import { site } from "@/content/site";
 export const metadata: Metadata = {
   title: "Contact Monarch Visa Advisors — Ahmedabad, Gujarat",
   description:
-    "Get in touch with Monarch Visa Advisors for a free profile assessment. Call our counselling or support lines, email us, or visit our Ahmedabad office.",
+    "Get in touch with Monarch Visa Advisors for a free profile assessment. Call our study visa or work visa & PR lines, email us, or visit our Ahmedabad office.",
   alternates: { canonical: "/contact" },
 };
 
@@ -77,7 +77,14 @@ export default function ContactPage() {
                   </span>
                   <span>
                     <span className="block text-xs uppercase tracking-wide text-ink">Office</span>
-                    <span className="font-medium text-navy-900">{site.address.line2}</span>
+                    <a
+                      href={site.mapsShareUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="font-medium text-navy-900 hover:text-brand-600"
+                    >
+                      {site.address.line2}
+                    </a>
                   </span>
                 </li>
                 <li className="flex items-start gap-3">
@@ -111,10 +118,19 @@ export default function ContactPage() {
               <iframe
                 title="Monarch Visa Advisors office location — Ahmedabad, Gujarat"
                 src={site.mapEmbedSrc}
-                className="h-64 w-full"
+                className="h-56 w-full"
                 loading="lazy"
                 referrerPolicy="no-referrer-when-downgrade"
               />
+              <a
+                href={site.mapsShareUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="flex items-center justify-center gap-1.5 border-t border-hair bg-white py-3 text-sm font-semibold text-brand-600 hover:bg-brand-50"
+              >
+                <MapPin className="h-4 w-4" aria-hidden />
+                Get Directions on Google Maps
+              </a>
             </div>
           </Reveal>
         </div>
