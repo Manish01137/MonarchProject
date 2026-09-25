@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
@@ -24,6 +25,16 @@ export function Navbar() {
   const [openMenu, setOpenMenu] = useState<"countries" | "services" | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mobileAccordion, setMobileAccordion] = useState<"countries" | "services" | null>(null);
+  // The drawer is portaled to <body> (see render below) instead of rendered inline here:
+  // a `fixed inset-y-0` element nested inside this header would size itself against the
+  // header's own box rather than the viewport, because the header's backdrop-blur creates
+  // a containing block for fixed descendants — collapsing the drawer down to the header's
+  // 72px height instead of full-screen. `mounted` just guards document.body for SSR.
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -61,240 +72,246 @@ export function Navbar() {
   );
 
   return (
-    <header
-      className={cn(
-        "fixed inset-x-0 top-0 z-50 transition-all duration-300",
-        scrolled
-          ? "bg-white/95 backdrop-blur-md shadow-nav"
-          : "bg-white/80 backdrop-blur-sm",
-      )}
-    >
-      <nav className="container-x flex h-[72px] items-center justify-between gap-4" aria-label="Primary">
-        <Link href="/" className="shrink-0" aria-label="Monarch Visa Advisors — home">
-          <MonarchLogo />
-        </Link>
-
-        {/* desktop nav */}
-        <div className="hidden items-center gap-1 lg:flex">
-          <NavLink href="/" label="Home" active={pathname === "/"} />
-
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenMenu("countries")}
-            onMouseLeave={() => setOpenMenu(null)}
-          >
-            <button
-              type="button"
-              className={cn(
-                "flex items-center gap-1 rounded-lg px-3.5 py-2 text-sm font-medium text-navy-900 transition-colors hover:text-brand-600",
-                pathname === "/countries" && "text-brand-600",
-              )}
-              aria-expanded={openMenu === "countries"}
-              aria-haspopup="true"
-              onClick={() => setOpenMenu((v) => (v === "countries" ? null : "countries"))}
-            >
-              Countries
-              <ChevronDown className="h-4 w-4" aria-hidden />
-            </button>
-            <AnimatePresence>
-              {openMenu === "countries" && (
-                <motion.div
-                  {...dropdownMotion}
-                  className="absolute left-0 top-full w-64 pt-3"
-                >
-                  <div className="overflow-hidden rounded-2xl border border-hair bg-white p-2 shadow-card">
-                    {countryNav.map((c) => (
-                      <a
-                        key={c.slug}
-                        href={`/countries#${c.slug}`}
-                        onClick={goToCountry(c.slug)}
-                        className="block rounded-lg px-3 py-2 text-sm font-medium text-navy-900 transition-colors hover:bg-brand-50 hover:text-brand-700"
-                      >
-                        {c.label}
-                      </a>
-                    ))}
-                    <div className="my-1.5 h-px bg-hair" />
-                    <Link
-                      href="/countries"
-                      className="block rounded-lg px-3 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-50"
-                    >
-                      View All Countries →
-                    </Link>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <div
-            className="relative"
-            onMouseEnter={() => setOpenMenu("services")}
-            onMouseLeave={() => setOpenMenu(null)}
-          >
-            <button
-              type="button"
-              className={cn(
-                "flex items-center gap-1 rounded-lg px-3.5 py-2 text-sm font-medium text-navy-900 transition-colors hover:text-brand-600",
-                pathname.startsWith("/services") && "text-brand-600",
-              )}
-              aria-expanded={openMenu === "services"}
-              aria-haspopup="true"
-              onClick={() => setOpenMenu((v) => (v === "services" ? null : "services"))}
-            >
-              Services
-              <ChevronDown className="h-4 w-4" aria-hidden />
-            </button>
-            <AnimatePresence>
-              {openMenu === "services" && (
-                <motion.div {...dropdownMotion} className="absolute left-0 top-full w-[19rem] pt-3">
-                  <div className="overflow-hidden rounded-2xl border border-hair bg-white p-2 shadow-card">
-                    {serviceNav.map((s) => (
-                      <Link
-                        key={s.slug}
-                        href={`/services/${s.slug}`}
-                        className="block rounded-lg px-3 py-2 text-sm font-medium text-navy-900 transition-colors hover:bg-brand-50 hover:text-brand-700"
-                      >
-                        {s.label}
-                      </Link>
-                    ))}
-                    <div className="my-1.5 h-px bg-hair" />
-                    <Link
-                      href="/services"
-                      className="block rounded-lg px-3 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-50"
-                    >
-                      View All Services →
-                    </Link>
-                  </div>
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
-
-          <NavLink href="/team" label="Team" active={pathname === "/team"} />
-          <NavLink href="/contact" label="Contact" active={pathname === "/contact"} />
-        </div>
-
-        <div className="hidden lg:block">
-          <Button href="/contact" size="sm" withArrow>
-            <Phone className="h-4 w-4" aria-hidden />
-            Free Counselling
-          </Button>
-        </div>
-
-        <button
-          type="button"
-          className="rounded-lg p-2 text-navy-900 lg:hidden"
-          onClick={() => setMobileOpen(true)}
-          aria-label="Open menu"
-        >
-          <Menu className="h-6 w-6" />
-        </button>
-      </nav>
-
-      {/* mobile drawer */}
-      <AnimatePresence>
-        {mobileOpen && (
-          <>
-            <motion.div
-              className="fixed inset-0 z-40 bg-navy-900/40 lg:hidden"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMobileOpen(false)}
-            />
-            <motion.div
-              className="fixed inset-y-0 right-0 z-50 flex w-[86%] max-w-sm flex-col bg-white lg:hidden"
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "tween", duration: 0.25 }}
-            >
-              <div className="flex items-center justify-between border-b border-hair px-5 py-4">
-                <MonarchLogo />
-                <button
-                  type="button"
-                  className="rounded-lg p-2 text-navy-900"
-                  onClick={() => setMobileOpen(false)}
-                  aria-label="Close menu"
-                >
-                  <X className="h-6 w-6" />
-                </button>
-              </div>
-
-              <div className="flex-1 overflow-y-auto px-5 py-4">
-                <MobileLink href="/" label="Home" onNavigate={() => setMobileOpen(false)} />
-
-                <MobileAccordion
-                  label="Countries"
-                  open={mobileAccordion === "countries"}
-                  onToggle={() =>
-                    setMobileAccordion((v) => (v === "countries" ? null : "countries"))
-                  }
-                >
-                  {countryNav.map((c) => (
-                    <a
-                      key={c.slug}
-                      href={`/countries#${c.slug}`}
-                      onClick={goToCountry(c.slug)}
-                      className="block rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-brand-50 hover:text-brand-700"
-                    >
-                      {c.label}
-                    </a>
-                  ))}
-                  <Link
-                    href="/countries"
-                    onClick={() => setMobileOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand-600 hover:bg-brand-50"
-                  >
-                    View All Countries →
-                  </Link>
-                </MobileAccordion>
-
-                <MobileAccordion
-                  label="Services"
-                  open={mobileAccordion === "services"}
-                  onToggle={() =>
-                    setMobileAccordion((v) => (v === "services" ? null : "services"))
-                  }
-                >
-                  {serviceNav.map((s) => (
-                    <Link
-                      key={s.slug}
-                      href={`/services/${s.slug}`}
-                      onClick={() => setMobileOpen(false)}
-                      className="block rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-brand-50 hover:text-brand-700"
-                    >
-                      {s.label}
-                    </Link>
-                  ))}
-                  <Link
-                    href="/services"
-                    onClick={() => setMobileOpen(false)}
-                    className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand-600 hover:bg-brand-50"
-                  >
-                    View All Services →
-                  </Link>
-                </MobileAccordion>
-
-                <MobileLink href="/team" label="Team" onNavigate={() => setMobileOpen(false)} />
-                <MobileLink
-                  href="/contact"
-                  label="Contact"
-                  onNavigate={() => setMobileOpen(false)}
-                />
-              </div>
-
-              <div className="border-t border-hair p-5">
-                <Button href="/contact" className="w-full" withArrow onClick={() => setMobileOpen(false)}>
-                  <Phone className="h-4 w-4" aria-hidden />
-                  Free Counselling
-                </Button>
-              </div>
-            </motion.div>
-          </>
+    <>
+      <header
+        className={cn(
+          "fixed inset-x-0 top-0 z-50 transition-all duration-300",
+          scrolled ? "bg-white/95 backdrop-blur-md shadow-nav" : "bg-white/80 backdrop-blur-sm",
         )}
-      </AnimatePresence>
-    </header>
+      >
+        <nav className="container-x flex h-[72px] items-center justify-between gap-4" aria-label="Primary">
+          <Link href="/" className="shrink-0" aria-label="Monarch Visa Advisors — home">
+            <MonarchLogo priority />
+          </Link>
+
+          {/* desktop nav */}
+          <div className="hidden items-center gap-1 lg:flex">
+            <NavLink href="/" label="Home" active={pathname === "/"} />
+
+            <div
+              className="relative"
+              onMouseEnter={() => setOpenMenu("countries")}
+              onMouseLeave={() => setOpenMenu(null)}
+            >
+              <button
+                type="button"
+                className={cn(
+                  "flex items-center gap-1 rounded-lg px-3.5 py-2 text-sm font-medium text-navy-900 transition-colors hover:text-brand-600",
+                  pathname === "/countries" && "text-brand-600",
+                )}
+                aria-expanded={openMenu === "countries"}
+                aria-haspopup="true"
+                onClick={() => setOpenMenu((v) => (v === "countries" ? null : "countries"))}
+              >
+                Countries
+                <ChevronDown className="h-4 w-4" aria-hidden />
+              </button>
+              <AnimatePresence>
+                {openMenu === "countries" && (
+                  <motion.div {...dropdownMotion} className="absolute left-0 top-full w-64 pt-3">
+                    <div className="overflow-hidden rounded-2xl border border-hair bg-white p-2 shadow-card">
+                      {countryNav.map((c) => (
+                        <a
+                          key={c.slug}
+                          href={`/countries#${c.slug}`}
+                          onClick={goToCountry(c.slug)}
+                          className="block rounded-lg px-3 py-2 text-sm font-medium text-navy-900 transition-colors hover:bg-brand-50 hover:text-brand-700"
+                        >
+                          {c.label}
+                        </a>
+                      ))}
+                      <div className="my-1.5 h-px bg-hair" />
+                      <Link
+                        href="/countries"
+                        className="block rounded-lg px-3 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-50"
+                      >
+                        View All Countries →
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <div
+              className="relative"
+              onMouseEnter={() => setOpenMenu("services")}
+              onMouseLeave={() => setOpenMenu(null)}
+            >
+              <button
+                type="button"
+                className={cn(
+                  "flex items-center gap-1 rounded-lg px-3.5 py-2 text-sm font-medium text-navy-900 transition-colors hover:text-brand-600",
+                  pathname.startsWith("/services") && "text-brand-600",
+                )}
+                aria-expanded={openMenu === "services"}
+                aria-haspopup="true"
+                onClick={() => setOpenMenu((v) => (v === "services" ? null : "services"))}
+              >
+                Services
+                <ChevronDown className="h-4 w-4" aria-hidden />
+              </button>
+              <AnimatePresence>
+                {openMenu === "services" && (
+                  <motion.div {...dropdownMotion} className="absolute left-0 top-full w-[19rem] pt-3">
+                    <div className="overflow-hidden rounded-2xl border border-hair bg-white p-2 shadow-card">
+                      {serviceNav.map((s) => (
+                        <Link
+                          key={s.slug}
+                          href={`/services/${s.slug}`}
+                          className="block rounded-lg px-3 py-2 text-sm font-medium text-navy-900 transition-colors hover:bg-brand-50 hover:text-brand-700"
+                        >
+                          {s.label}
+                        </Link>
+                      ))}
+                      <div className="my-1.5 h-px bg-hair" />
+                      <Link
+                        href="/services"
+                        className="block rounded-lg px-3 py-2 text-sm font-semibold text-brand-600 hover:bg-brand-50"
+                      >
+                        View All Services →
+                      </Link>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+
+            <NavLink href="/team" label="Team" active={pathname === "/team"} />
+            <NavLink href="/contact" label="Contact" active={pathname === "/contact"} />
+          </div>
+
+          <div className="hidden lg:block">
+            <Button href="/contact" size="sm" withArrow>
+              <Phone className="h-4 w-4" aria-hidden />
+              Free Counselling
+            </Button>
+          </div>
+
+          <button
+            type="button"
+            className="rounded-lg p-2 text-navy-900 lg:hidden"
+            onClick={() => setMobileOpen(true)}
+            aria-label="Open menu"
+          >
+            <Menu className="h-6 w-6" />
+          </button>
+        </nav>
+      </header>
+
+      {/* Mobile drawer — portaled to <body>, see the `mounted` comment above */}
+      {mounted &&
+        createPortal(
+          <AnimatePresence>
+            {mobileOpen && (
+              <>
+                <motion.div
+                  className="fixed inset-0 z-40 bg-navy-900/40 lg:hidden"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setMobileOpen(false)}
+                />
+                <motion.div
+                  className="fixed inset-y-0 right-0 z-50 flex w-[86%] max-w-sm flex-col bg-white lg:hidden"
+                  initial={{ x: "100%" }}
+                  animate={{ x: 0 }}
+                  exit={{ x: "100%" }}
+                  transition={{ type: "tween", duration: 0.25 }}
+                >
+                  <div className="flex items-center justify-between border-b border-hair px-5 py-4">
+                    <MonarchLogo />
+                    <button
+                      type="button"
+                      className="rounded-lg p-2 text-navy-900"
+                      onClick={() => setMobileOpen(false)}
+                      aria-label="Close menu"
+                    >
+                      <X className="h-6 w-6" />
+                    </button>
+                  </div>
+
+                  <div className="flex-1 overflow-y-auto px-5 py-4">
+                    <MobileLink href="/" label="Home" onNavigate={() => setMobileOpen(false)} />
+
+                    <MobileAccordion
+                      label="Countries"
+                      open={mobileAccordion === "countries"}
+                      onToggle={() =>
+                        setMobileAccordion((v) => (v === "countries" ? null : "countries"))
+                      }
+                    >
+                      {countryNav.map((c) => (
+                        <a
+                          key={c.slug}
+                          href={`/countries#${c.slug}`}
+                          onClick={goToCountry(c.slug)}
+                          className="block rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-brand-50 hover:text-brand-700"
+                        >
+                          {c.label}
+                        </a>
+                      ))}
+                      <Link
+                        href="/countries"
+                        onClick={() => setMobileOpen(false)}
+                        className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand-600 hover:bg-brand-50"
+                      >
+                        View All Countries →
+                      </Link>
+                    </MobileAccordion>
+
+                    <MobileAccordion
+                      label="Services"
+                      open={mobileAccordion === "services"}
+                      onToggle={() =>
+                        setMobileAccordion((v) => (v === "services" ? null : "services"))
+                      }
+                    >
+                      {serviceNav.map((s) => (
+                        <Link
+                          key={s.slug}
+                          href={`/services/${s.slug}`}
+                          onClick={() => setMobileOpen(false)}
+                          className="block rounded-lg px-3 py-2.5 text-sm font-medium text-ink hover:bg-brand-50 hover:text-brand-700"
+                        >
+                          {s.label}
+                        </Link>
+                      ))}
+                      <Link
+                        href="/services"
+                        onClick={() => setMobileOpen(false)}
+                        className="block rounded-lg px-3 py-2.5 text-sm font-semibold text-brand-600 hover:bg-brand-50"
+                      >
+                        View All Services →
+                      </Link>
+                    </MobileAccordion>
+
+                    <MobileLink href="/team" label="Team" onNavigate={() => setMobileOpen(false)} />
+                    <MobileLink
+                      href="/contact"
+                      label="Contact"
+                      onNavigate={() => setMobileOpen(false)}
+                    />
+                  </div>
+
+                  <div className="border-t border-hair p-5">
+                    <Button
+                      href="/contact"
+                      className="w-full"
+                      withArrow
+                      onClick={() => setMobileOpen(false)}
+                    >
+                      <Phone className="h-4 w-4" aria-hidden />
+                      Free Counselling
+                    </Button>
+                  </div>
+                </motion.div>
+              </>
+            )}
+          </AnimatePresence>,
+          document.body,
+        )}
+    </>
   );
 }
 
@@ -352,10 +369,7 @@ function MobileAccordion({
         aria-expanded={open}
       >
         {label}
-        <ChevronDown
-          className={cn("h-5 w-5 transition-transform", open && "rotate-180")}
-          aria-hidden
-        />
+        <ChevronDown className={cn("h-5 w-5 transition-transform", open && "rotate-180")} aria-hidden />
       </button>
       <AnimatePresence initial={false}>
         {open && (

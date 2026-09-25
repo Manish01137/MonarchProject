@@ -12,10 +12,12 @@ export const site = {
   ],
   email: "hello@monarchvisaadvisors.com",
   address: {
-    line1: "Monarch Visa Advisors LLP",
-    line2: "Ahmedabad, Gujarat, India",
+    line1: "Devnandan Mega Mall, 316/317",
+    line2: "Opp. Sanyas Ashram, Ellisbridge, Ahmedabad, Gujarat 380009",
+    street: "Devnandan Mega Mall, 316/317, Opp. Sanyas Ashram, Ellisbridge",
     locality: "Ahmedabad",
     region: "Gujarat",
+    postalCode: "380009",
     country: "IN",
   },
   /** Exact, client-supplied Google Business Profile link — use for every "view on map" / "get directions" CTA. */
@@ -43,10 +45,10 @@ export const site = {
       icon: "linkedin" as const,
     },
   ],
-  // Keyless embed resolved by business name — the exact listing behind mapsShareUrl
-  // (Google Knowledge Graph id /g/11zfq7sdx1 = "Monarch Visa Advisors LLP").
+  // Keyless embed, queried on the full street address (Knowledge Graph id /g/11zfq7sdx1 =
+  // "Monarch Visa Advisors LLP", same listing as mapsShareUrl).
   mapEmbedSrc:
-    "https://www.google.com/maps?q=Monarch+Visa+Advisors+LLP%2C+Ahmedabad%2C+Gujarat&output=embed",
+    "https://www.google.com/maps?q=Devnandan+Mega+Mall%2C+316%2F317%2C+Opp.+Sanyas+Ashram%2C+Ellisbridge%2C+Ahmedabad%2C+Gujarat+380009&output=embed",
 };
 
 export const countryNav = [

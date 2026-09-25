@@ -83,7 +83,8 @@ export default function ContactPage() {
                       rel="noopener noreferrer"
                       className="font-medium text-navy-900 hover:text-brand-600"
                     >
-                      {site.address.line2}
+                      <span className="block">{site.address.line1}</span>
+                      <span className="block">{site.address.line2}</span>
                     </a>
                   </span>
                 </li>

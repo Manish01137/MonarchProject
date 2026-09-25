@@ -38,10 +38,13 @@ export const localBusinessSchema = {
   priceRange: "$$",
   address: {
     "@type": "PostalAddress",
+    streetAddress: site.address.street,
     addressLocality: site.address.locality,
     addressRegion: site.address.region,
+    postalCode: site.address.postalCode,
     addressCountry: site.address.country,
   },
+  hasMap: site.mapsShareUrl,
   openingHours: "Mo-Sa 10:00-19:00",
   areaServed: "Worldwide",
 };

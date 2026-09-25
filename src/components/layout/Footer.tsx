@@ -62,7 +62,8 @@ export function Footer() {
                 rel="noopener noreferrer"
                 className="text-white/80 hover:text-white"
               >
-                {site.address.line2}
+                <span className="block">{site.address.line1}</span>
+                <span className="block">{site.address.line2}</span>
               </a>
             </li>
           </ul>
@@ -84,7 +85,7 @@ export function Footer() {
           <p>
             © {new Date().getFullYear()} {site.name}. All rights reserved.
           </p>
-          <p>Ahmedabad, Gujarat, India</p>
+          <p>Ellisbridge, Ahmedabad, Gujarat 380009</p>
         </div>
       </div>
     </footer>

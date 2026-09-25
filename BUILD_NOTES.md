@@ -1,5 +1,39 @@
 # Build Notes — for client review
 
+## 0. Bugs found and fixed this round
+
+- **Mobile nav menu was unusable.** The hamburger drawer (`Navbar.tsx`) collapsed to ~72px tall —
+  only the logo/close-button row showed; Home/Countries/Services/Team/Contact and the "Free
+  Counselling" button were invisible. Root cause: the drawer is `position: fixed; inset-y-0`
+  (meant to span the full screen), but it was nested inside the sticky `<header>`, and the
+  header's `backdrop-blur-*` class makes it a **CSS containing block for `fixed` descendants** —
+  so the drawer sized itself against the header's own 72px box instead of the viewport. Fixed by
+  portaling the drawer to `document.body` (via `react-dom`'s `createPortal`), which is now the
+  standard escape hatch for any fixed-position overlay nested under a blurred/transformed
+  ancestor. Verified full-height in both dev and a production build.
+- **"Explore Destinations" button went invisible on hover** (home hero, desktop). It used the
+  shared `outline` Button variant with a `className` override for the dark-background hover
+  colours. Tailwind doesn't guarantee that an external `className` reliably beats a component's
+  own baked-in classes for the *same, unprefixed* utility (unlike responsive `lg:` overrides,
+  which are reliably ordered) — here it flipped the background to white but left the text white
+  too, so the label vanished. Fixed with a proper `outlineLight` Button variant (self-contained,
+  no cross-source class conflict) — see `Button.tsx`. Audited the rest of the codebase for the
+  same pattern; no other instance existed.
+- **Home hero logo caused an LCP warning on every non-home page** (Next.js dev console: "Image …
+  monarch-logo.png … add the priority property"). `/services`, `/team`, `/contact`, etc. have no
+  hero photo above the fold, so the navbar logo becomes the Largest Contentful Paint element.
+  Fixed by passing `priority` to the navbar's `<MonarchLogo>` instance. Confirmed clean console on
+  a production build afterward.
+- Site-wide audit also covered: every internal link/anchor (`/countries#slug`, `/services/slug`,
+  `/#roadmap` etc.) resolves to a real route or section id; all continuous animations (floating
+  chips/badges, marquee, count-up) animate `transform`/`opacity` only, so they're GPU-composited
+  and don't trigger layout thrash; a 404 route still correctly 404s; no other `position: fixed`
+  element in the codebase sits inside a blurred/transformed ancestor. One benign, expected dev-only
+  warning remains: the hero's off-breakpoint image (mobile banner hidden on desktop, or vice
+  versa) logs a `sizes="100vw"` mismatch, because it's still measured while `display: none`. The
+  visible image at any given breakpoint never triggers it — this is the accepted cost of serving a
+  different image per breakpoint and isn't a real issue.
+
 ## 1. Items flagged in the brief
 
 ### Duplicate 6-step process (brief §6.1)
@@ -55,14 +89,17 @@ The 25+ destinations claim in the stat bar is aspirational marketing copy — ad
 - **Map**: `mapsShareUrl` is the client's exact Google Business Profile link
   (`https://share.google/SW2uF8r1x212Fzj8E`, resolves to Knowledge Graph id `/g/11zfq7sdx1` —
   "Monarch Visa Advisors LLP") — used for every "view on map / get directions" link (footer + contact
-  page). `mapEmbedSrc` is a keyless embed matched by business name to that same listing.
+  page).
+- **Exact street address**: ✅ client-confirmed — Devnandan Mega Mall, 316/317, Opp. Sanyas Ashram,
+  Ellisbridge, Ahmedabad, Gujarat 380009. Wired into `site.address` (`line1`/`line2`/`street`/
+  `postalCode`), the footer, the Contact page "Office" field, `mapEmbedSrc` (keyless embed now
+  queried on the full address, not just the business name), and `localBusinessSchema`'s
+  `streetAddress`/`postalCode`/`hasMap`.
 
 Still to swap:
-- **Exact street address text** — the resolver could confirm the *listing* but not read out the street
-  address (Google blocked the automated fetch). `site.address.line2` still shows the general
-  "Ahmedabad, Gujarat, India" — paste the precise street address into `src/content/site.ts` once you
-  have it, and consider swapping `mapEmbedSrc` for a Google Maps **Embed API** URL (needs an API key)
-  for a guaranteed-exact pin instead of a name-matched search.
+- Consider a Google Maps **Embed API** URL (needs an API key) for `mapEmbedSrc` instead of the
+  keyless name/address-matched search — guarantees the exact pin rather than Google's best text match
+  (which is already accurate here, just not contractually guaranteed the way an API-keyed embed is).
 - **`hello@monarchvisaadvisors.com`** in `src/content/site.ts` is still a placeholder — confirm the
   real inbox.
 - **`src/content/home.ts`** — stats (4.8★, 10,000+, 98%, 25+, 10+ yrs) → confirm each figure is

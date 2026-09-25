@@ -2,7 +2,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/cn";
 
-type Variant = "primary" | "outline" | "maroon" | "ghost";
+type Variant = "primary" | "outline" | "outlineLight" | "maroon" | "ghost";
 type Size = "sm" | "md" | "lg";
 
 const base =
@@ -13,6 +13,12 @@ const variants: Record<Variant, string> = {
     "bg-brand-600 text-white rounded-full shadow-[0_8px_20px_rgba(228,78,41,0.28)] hover:bg-brand-700 hover:shadow-[0_10px_26px_rgba(228,78,41,0.34)] active:scale-[0.98]",
   outline:
     "border border-navy-900 text-navy-900 rounded-full hover:bg-navy-900 hover:text-white active:scale-[0.98]",
+  // Same shape as `outline`, self-contained (not a className override) so it's
+  // safe to use on dark/image backgrounds — see Hero.tsx for why: overriding a
+  // variant's hover classes via an external `className` is not reliably ordered
+  // by Tailwind, so it can flip only one of bg/text and leave invisible text.
+  outlineLight:
+    "border border-white/60 text-white rounded-full hover:bg-white hover:text-navy-900 active:scale-[0.98]",
   maroon:
     "bg-maroon-500 text-white rounded-full shadow-[0_8px_20px_rgba(138,42,67,0.32)] hover:bg-maroon-600 active:scale-[0.98]",
   ghost: "text-navy-900 rounded-lg hover:bg-navy-900/5",
