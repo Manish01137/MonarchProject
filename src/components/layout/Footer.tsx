@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Mail, MapPin, Phone } from "lucide-react";
 import { footerNav, site } from "@/content/site";
@@ -27,6 +28,16 @@ export function Footer() {
               </li>
             ))}
           </ul>
+
+          <div className="mt-1 inline-flex w-fit items-center rounded-xl bg-white px-3 py-2 shadow-sm">
+            <Image
+              src="/iso-9001-certified.jpg"
+              alt="ISO 9001:2015 Certified"
+              width={637}
+              height={274}
+              className="h-9 w-auto object-contain"
+            />
+          </div>
         </div>
 
         <FooterCol title="Explore" links={footerNav.explore} />

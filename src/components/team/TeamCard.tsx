@@ -17,7 +17,7 @@ export function TeamCard({ member }: { member: TeamMember }) {
           alt={`${member.name} — ${member.role}`}
           fill
           sizes="(max-width: 640px) 45vw, (max-width: 1024px) 30vw, 22vw"
-          className="object-cover transition-transform duration-300 group-hover:scale-[1.05]"
+          className="object-cover object-[center_18%] transition-transform duration-300 group-hover:scale-[1.05]"
         />
       </div>
       <div>
