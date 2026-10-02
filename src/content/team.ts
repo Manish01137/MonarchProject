@@ -8,7 +8,7 @@ export type TeamMember = {
 // (public/team/) standing in for real headshots — swap the files for actual
 // staff photos whenever they're available; the component/layout won't change.
 export const team: TeamMember[] = [
-  { name: "Dipin Neduthody", role: "Co-Founder", photo: "/team/dipin-neduthody.jpg" },
+  { name: "Dipin Neduthody", role: "Founder", photo: "/team/dipin-neduthody.jpg" },
   {
     name: "Beena Das",
     role: "Immigration Sales – Branch Manager",
