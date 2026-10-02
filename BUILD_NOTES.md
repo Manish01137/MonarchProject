@@ -1,5 +1,15 @@
 # Build Notes — for client review
 
+## Deploying this site
+
+See **`DEPLOYMENT.md`** — the project now builds as a static export (`output: "export"` in
+`next.config.mjs`) specifically so it can be zip-uploaded to Hostinger shared hosting with no
+Node.js server. A ready-to-upload `monarch-visa-website.zip` is already built in the project root.
+**Read §0 of that file before going live** — the contact forms don't send anywhere yet on static
+hosting, and the site domain (`src/content/site.ts`) needs to be confirmed first.
+
+Contact email is now `info@monarchvisa.com` (was the placeholder `hello@monarchvisaadvisors.com`).
+
 ## 0. Bugs found and fixed this round
 
 - **Mobile nav menu was unusable.** The hamburger drawer (`Navbar.tsx`) collapsed to ~72px tall —

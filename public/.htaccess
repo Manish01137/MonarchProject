@@ -1,0 +1,36 @@
+# Monarch Visa Advisors — static hosting config (Apache / LiteSpeed, e.g. Hostinger shared hosting)
+# This file ships inside public/, so it's copied into out/ on every `npm run build`
+# and lands at the web root when you upload the export.
+
+# --- Custom 404 page (built by Next.js as a flat file, works with or without trailing slash) ---
+ErrorDocument 404 /404.html
+
+# --- Force HTTPS (Hostinger issues a free SSL certificate — enable it in hPanel first,
+#     then this redirects any stray http:// visit) ---
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+</IfModule>
+
+# --- Compression ---
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/css text/javascript application/javascript application/json image/svg+xml
+</IfModule>
+
+# --- Browser caching for static, content-hashed build assets and images ---
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType text/css "access plus 1 year"
+  ExpiresByType application/javascript "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType font/woff2 "access plus 1 year"
+</IfModule>
+
+# --- Baseline security headers ---
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>

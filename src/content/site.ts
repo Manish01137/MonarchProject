@@ -10,7 +10,7 @@ export const site = {
     { label: "Study Visa", value: "+91 93284 97871", href: "tel:+919328497871" },
     { label: "Work Visa & PR", value: "+91 88498 73912", href: "tel:+918849873912" },
   ],
-  email: "hello@monarchvisaadvisors.com",
+  email: "info@monarchvisa.com",
   address: {
     line1: "Devnandan Mega Mall, 316/317",
     line2: "Opp. Sanyas Ashram, Ellisbridge, Ahmedabad, Gujarat 380009",
